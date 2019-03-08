@@ -3,17 +3,21 @@ import { View, StyleSheet, Dimensions, Animated, Image, PanResponder, Text, Touc
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { Header } from './components'
 import Profile from './views/Profile'
+import { data } from './config/api'
 
 const SCREEN_HEIGHT = Dimensions.get('window').height
 const SCREEN_WIDTH = Dimensions.get('window').width
 
-const Users = [
-    { id: 1, uri: 'https://kaysharbor.com/wp-content/uploads/2018/05/all-about-react-native-apps-776x415.png', title: 'Developer React Native', desc: 'I need to developer react native with experience in GraphQL for a project.', price: '100/h' },
-    { id: 2, uri: 'https://udemy-images.udemy.com/course/750x422/1286908_1773_4.jpg', title: 'Developer React', desc: 'I need to developer react', price: '65/h' },
-    { id: 3, uri: 'https://cdn-images-1.medium.com/max/1200/1*nq9cdMxtdhQ0ZGL8OuSCUQ.jpeg', title: 'Developer Vue', desc: 'I need to developer vue with experience in Vuex and Apollo.', price: '90/h' },
-    { id: 4, uri: 'https://christianliebel.com/wp-content/uploads/2016/02/Angular2-825x510.png', title: 'Developer Angular', desc: 'I need to developer angular.', price: '33/h' },
-    { id: 5, uri: 'https://www.edsonemiliano.com.br/blog/wp-content/uploads/2015/04/icon.javascript.png', title: 'Developer Javascript', desc: 'I need to developer javascript with experience in React or Vue.', price: '84/h' },
-]
+// const Users = [
+//     { id: 1, uri: 'https://kaysharbor.com/wp-content/uploads/2018/05/all-about-react-native-apps-776x415.png', title: 'Developer React Native', desc: 'I need to developer react native with experience in GraphQL for a project.', price: '100/h' },
+//     { id: 2, uri: 'https://udemy-images.udemy.com/course/750x422/1286908_1773_4.jpg', title: 'Developer React', desc: 'I need to developer react', price: '65/h' },
+//     { id: 3, uri: 'https://cdn-images-1.medium.com/max/1200/1*nq9cdMxtdhQ0ZGL8OuSCUQ.jpeg', title: 'Developer Vue', desc: 'I need to developer vue with experience in Vuex and Apollo.', price: '90/h' },
+//     { id: 4, uri: 'https://christianliebel.com/wp-content/uploads/2016/02/Angular2-825x510.png', title: 'Developer Angular', desc: 'I need to developer angular.', price: '33/h' },
+//     { id: 5, uri: 'https://www.edsonemiliano.com.br/blog/wp-content/uploads/2015/04/icon.javascript.png', title: 'Developer Javascript', desc: 'I need to developer javascript with experience in React or Vue.', price: '84/h' },
+// ]
+
+const Users = data
+
 
 class App extends Component {
     constructor(){
@@ -68,6 +72,7 @@ class App extends Component {
     }
 
     componentWillMount(){
+        console.log(Users)
         this.PanResponder = PanResponder.create({
             onStartShouldSetPanResponder: (evt, gestureState) => true,
             onPanResponderMove: (evt, gestureState) => {
@@ -175,13 +180,12 @@ class App extends Component {
 
                         <Image 
                             style={{flex: 1, width: null, height: null, resizeMode: 'cover', borderRadius: 20}}
-                            source={{uri: item.uri}} 
+                            source={item.images[0]} 
                         />
 
                         <View style={{ backgroundColor: '#fff', padding: 15, position: 'absolute', bottom: 0, height: 120, width: '100%', left: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
-                            <Text style={styles.Title}>{ item.title }</Text>
+                            <Text style={styles.Title}>{ item.name }</Text>
                             <Text style={styles.Sub}>{ item.desc }</Text>
-                            <Text style={styles.Value}>$ { item.price }</Text>
                         </View>
                     </Animated.View>
                 )
@@ -195,7 +199,8 @@ class App extends Component {
                                 transform: [{ scale: this.nextCardScale }],
                                 height: SCREEN_HEIGHT - 170,
                                 width: SCREEN_WIDTH,
-                                padding: 20,
+                                paddingLeft: 20,
+                                paddingRight: 20,
                                 position: 'absolute'
                             }
                         ]}
@@ -214,8 +219,13 @@ class App extends Component {
 
                         <Image 
                             style={{flex: 1, width: null, height: null, resizeMode: 'cover', borderRadius: 20}}
-                            source={{uri: item.uri}} 
+                            source={item.images[0]} 
                         />
+
+                        <View style={{ backgroundColor: '#fff', padding: 15, position: 'absolute', bottom: 0, height: 120, width: '100%', left: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
+                            <Text style={styles.Title}>{ item.name }</Text>
+                            <Text style={styles.Sub}>{ item.desc }</Text>
+                        </View>
                     </Animated.View>
                 )
             }
@@ -225,10 +235,12 @@ class App extends Component {
     changeProfile = () => {
         Animated.parallel([    
             Animated.timing(this.state.profile, {
-                toValue: 0
+                toValue: 0,
+                duration: 300
             }),
             Animated.timing(this.state.matches, {
-                toValue: SCREEN_WIDTH
+                toValue: SCREEN_WIDTH,
+                duration: 300
             })
         ]).start()
     }
