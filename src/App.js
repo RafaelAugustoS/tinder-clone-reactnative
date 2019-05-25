@@ -3,18 +3,11 @@ import { View, StyleSheet, Dimensions, Animated, Image, PanResponder, Text, Touc
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { Header } from './components'
 import Profile from './views/Profile'
+import Map from './components/Map/Map'
 import { data } from './config/api'
 
 const SCREEN_HEIGHT = Dimensions.get('window').height
 const SCREEN_WIDTH = Dimensions.get('window').width
-
-// const Users = [
-//     { id: 1, uri: 'https://kaysharbor.com/wp-content/uploads/2018/05/all-about-react-native-apps-776x415.png', title: 'Developer React Native', desc: 'I need to developer react native with experience in GraphQL for a project.', price: '100/h' },
-//     { id: 2, uri: 'https://udemy-images.udemy.com/course/750x422/1286908_1773_4.jpg', title: 'Developer React', desc: 'I need to developer react', price: '65/h' },
-//     { id: 3, uri: 'https://cdn-images-1.medium.com/max/1200/1*nq9cdMxtdhQ0ZGL8OuSCUQ.jpeg', title: 'Developer Vue', desc: 'I need to developer vue with experience in Vuex and Apollo.', price: '90/h' },
-//     { id: 4, uri: 'https://christianliebel.com/wp-content/uploads/2016/02/Angular2-825x510.png', title: 'Developer Angular', desc: 'I need to developer angular.', price: '33/h' },
-//     { id: 5, uri: 'https://www.edsonemiliano.com.br/blog/wp-content/uploads/2015/04/icon.javascript.png', title: 'Developer Javascript', desc: 'I need to developer javascript with experience in React or Vue.', price: '84/h' },
-// ]
 
 const Users = data
 
@@ -28,7 +21,8 @@ class App extends Component {
         this.state = {
             currentIndex: 0,
             profile: new Animated.Value(-SCREEN_WIDTH),
-            matches: new Animated.Value(0)
+            matches: new Animated.Value(0),
+            map: false
         }
         
         this.rotate = this.position.x.interpolate({
@@ -134,6 +128,10 @@ class App extends Component {
                 this.position.setValue({ x: 0, y: 0 })    
             })
         })
+    }
+
+    changePlace = (value) => {
+        this.setState({map: value})
     }
 
 
@@ -245,38 +243,52 @@ class App extends Component {
         ]).start()
     }
 
+
+
     render(){
         return(
             <View style={styles.container}>
                 <Header 
                     profile={this.changeProfile}
+                    map={this.changePlace}
+                    tab={this.state.map}
                 />
 
                 <Profile 
                     position={this.state.profile}
                 />
 
-                <Animated.View style={{flex: 1, transform: [
-                    { translateX: this.state.matches }
-                ]}}>
-                    { this.renderUsers() }
-                </Animated.View>
+                {
+                    this.state.map && (
+                        <Map  />
+                    )
+                }
 
-                <View 
-                    style={{ height: 90, flexDirection: 'row', justifyContent: 'space-between', paddingTop: 10, paddingLeft: 50, paddingRight: 50}}
-                >
-                    <TouchableOpacity style={styles.ButtonIcon} onPress={() => this.disliked()}>
-                        <Icon name="times" size={20} color="#ee5253" />
-                    </TouchableOpacity>
+                {
+                    !this.state.map && (
+                        <Animated.View style={{flex: 1, overflow: 'hidden', transform: [
+                            { translateX: this.state.matches }
+                        ]}}>
+                            { this.renderUsers() }
 
-                    <TouchableOpacity style={[styles.ButtonIcon, { marginTop: 10}]}>
-                        <Icon name="star" size={20} color="#54a0ff" />
-                    </TouchableOpacity>
+                            <View 
+                                style={{ height: 90, position: 'absolute', width: '100%', bottom: 0, flexDirection: 'row', justifyContent: 'space-between', paddingTop: 10, paddingLeft: 50, paddingRight: 50}}
+                            >
+                                <TouchableOpacity style={styles.ButtonIcon} onPress={() => this.disliked()}>
+                                    <Icon name="times" size={20} color="#ee5253" />
+                                </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.ButtonIcon} onPress={() => this.liked()}>
-                        <Icon name="heart" size={20} color="#ee5253" />
-                    </TouchableOpacity>
-                </View>
+                                <TouchableOpacity style={[styles.ButtonIcon, { marginTop: 10}]}>
+                                    <Icon name="star" size={20} color="#54a0ff" />
+                                </TouchableOpacity>
+
+                                <TouchableOpacity style={styles.ButtonIcon} onPress={() => this.liked()}>
+                                    <Icon name="heart" size={20} color="#ee5253" />
+                                </TouchableOpacity>
+                            </View>
+                        </Animated.View>
+                    )
+                }
             </View>
         )
     }
