@@ -6,12 +6,10 @@ import Profile from './views/Profile'
 import Map from './components/Map/Map'
 import { data } from './config/api'
 
-import Routes from './routes'
-
-const App = () => {
-    return (
-        <Routes />
-    )
+const Cards = (props) => {
+  return( 
+    
+  )
 }
 
-export default App
+export default Cards
